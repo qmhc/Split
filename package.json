@@ -1,0 +1,72 @@
+{
+  "author": {
+    "name": "qmhc"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.4.5",
+    "@babel/runtime-corejs3": "^7.6.0",
+    "core-js": "^3.2.1"
+  },
+  "description": "A native flex table library",
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.4.5",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
+    "@babel/plugin-transform-runtime": "^7.4.4",
+    "@babel/preset-env": "^7.5.5",
+    "autoprefixer": "^9.6.1",
+    "babel-eslint": "^10.0.3",
+    "babel-loader": "^8.0.6",
+    "clean-webpack-plugin": "^0.1.19",
+    "css-loader": "^3.2.0",
+    "eslint": "^6.2.2",
+    "eslint-config-standard": "^13.0.1",
+    "eslint-friendly-formatter": "^4.0.1",
+    "eslint-loader": "^2.2.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "file-loader": "^2.0.0",
+    "friendly-errors-webpack-plugin": "^1.7.0",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.4.5",
+    "mockjs": "^1.0.1-beta3",
+    "node-sass": "^4.12.0",
+    "portfinder": "^1.0.23",
+    "postcss-loader": "^3.0.0",
+    "precss": "^4.0.0",
+    "sass-loader": "^7.3.1",
+    "style-loader": "^0.23.1",
+    "tar": "^2.2.2",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.7",
+    "webpack-dev-server": "^3.8.0",
+    "webpack-dev-server-output": "0.0.6",
+    "webpack-merge": "^4.2.2"
+  },
+  "keywords": [
+    "split",
+    "component",
+    "components",
+    "plugin",
+    "native"
+  ],
+  "license": "MIT",
+  "main": "dist/split.js",
+  "name": "@qmhc/split",
+  "private": false,
+  "scripts": {
+    "serve": "webpack-dev-server --inline --config ./config/webpack.dev.js",
+    "build": "webpack --config ./config/webpack.prod.js",
+    "lint": "eslint --fix --ext .js src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qmhc/Split"
+  },
+  "version": "0.1.0"
+}

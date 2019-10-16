@@ -1,0 +1,192 @@
+.split-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  .split-pane {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+  
+    &.left-pane {
+      left: 0;
+    }
+  
+    &.right-pane {
+      right: 0;
+    }
+  }
+  
+  .split-trigger {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+  }
+  
+  .split-trigger-handler {
+    width: 6px;
+    height: 100%;
+    background: #f8f8f9;
+    border: 1px solid #dcdee2;
+    border-top: none;
+    border-bottom: none;
+    cursor: col-resize;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .split-trigger-button {
+    $button-color: #cfcdce;
+    $button-hover-color: #b3b2b3;
+
+    position: relative;
+    width: 4px;
+    height: 28px;
+    background: $button-color;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    transition: all .2s;
+    border-radius: 2px;
+
+    &.left-full,
+    &.right-full {
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        border: 2px solid transparent;
+        transition: all .2s;
+      }
+    }
+  
+    &.left-full {
+      margin-bottom: 3px;
+
+      &::before {
+        border-left-color: $button-color;
+        border-bottom-color: $button-color;
+        top: -3px;
+      }
+
+      &::after {
+        border-top-color: $button-color;
+        border-left-color: $button-color;
+        bottom: -3px;
+      }
+    }
+  
+    &.right-full {
+      margin-top: 3px;
+
+      .split-icon-wrapper {
+        transform: rotate(180deg);
+      }
+
+      &::before {
+        border-right-color: $button-color;
+        border-bottom-color: $button-color;
+        top: -3px;
+      }
+
+      &::after {
+        border-top-color: $button-color;
+        border-right-color: $button-color;
+        bottom: -3px;
+      }
+    }
+
+    &:hover {
+      background: $button-hover-color;
+    }
+
+    &.left-full:hover {
+      &::before {
+        border-left-color: $button-hover-color;
+        border-bottom-color: $button-hover-color;
+      }
+
+      &::after {
+        border-top-color: $button-hover-color;
+        border-left-color: $button-hover-color;
+      }
+    }
+
+    &.right-full:hover {
+      &::before {
+        border-right-color: $button-hover-color;
+        border-bottom-color: $button-hover-color;
+      }
+
+      &::after {
+        border-top-color: $button-hover-color;
+        border-right-color: $button-hover-color;
+      }
+    }
+  }
+
+  .split-icon-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  &.split-moving {
+    user-select: none;
+
+    .split-pane {
+      z-index: -1;
+    }
+  }
+
+  &.split-transition {
+    .split-pane,
+    .split-trigger {
+      transition: all .3s;
+    }
+  }
+
+  &.left-full {
+    .split-trigger-handler {
+      transform: translateX(-100%);
+    }
+
+    .split-trigger-button {
+      &.left-full {
+        display: none;
+      }
+
+      &.right-full {
+        margin-top: 0;
+      }
+    }
+  }
+
+  &.right-full {
+    .split-trigger-button {
+      &.left-full {
+        margin-bottom: 0;
+      }
+
+      &.right-full {
+        display: none;
+      }
+    }
+  }
+
+  &.left-full,
+  &.right-full {
+    .split-trigger-handler {
+      cursor: default;
+    }
+  }
+}
