@@ -3,11 +3,9 @@
     "name": "qmhc"
   },
   "dependencies": {
-    "@babel/runtime": "^7.4.5",
-    "@babel/runtime-corejs3": "^7.6.0",
-    "core-js": "^3.2.1"
+    "@babel/runtime": "^7.4.5"
   },
-  "description": "A native flex table library",
+  "description": "A native split library",
   "devDependencies": {
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.4.5",

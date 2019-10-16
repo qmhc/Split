@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<title>Split Test</title>
+	<style>
+		* {
+			box-sizing: border-box;
+			margin: 0px;
+		}
+		html, body {
+			height: 100%;
+		}
+		body {
+			overflow: hidden;
+		}
+  </style>
+  <link rel="stylesheet" href="../dist/split.css">
+  <script src="../dist/split.js"></script>
+</head>
+<body>
+	<div id="app">
+		<div class="split-pane left-pane"></div>
+		<div class="split-pane right-pane"></div>
+  </div>
+  <script>
+    const split = new Split('#app')
+  </script>
+</body>
+</html>

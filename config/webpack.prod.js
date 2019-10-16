@@ -14,13 +14,10 @@ const miniCssExtract = new MiniCssExtractPlugin({
 })
 
 const uglify = new UglifyJSPlugin({
-	sourceMap: false,
+	sourceMap: true,
 	uglifyOptions: {
 		output: {
 			comments: false
-		},
-		compress: {
-			passes: 2
 		}
 	}
 })
