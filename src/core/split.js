@@ -19,7 +19,7 @@ export default class Split {
       container = document.createElement('div')
       container.style.minHeight = `${minHeight}px`
 
-      left.parentNode.insertBefore(this._container, left)
+      left.parentNode.insertBefore(container, left)
     }
 
     const { min = 100, value = 0.5, transition = true, timely = true } = option

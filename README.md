@@ -10,22 +10,19 @@ html
 
 ```html
 <div id="#app">
-  <div class="split-pane left-pane"></div>
-  <div class="split-pane right-pane"></div>
+  <div class="left"></div>
+  <div class="right"></div>
 </div>
 ```
 
 js
 
 ```js
-// contaniner 对应的 Element 内至少要存在两个 <div class="split-pane"></div>
-// 左侧面板添加类名 left-pane 右边面板添加类名 right-pane
-
 import Split from '@qmhc/split'
 
 import '@qmhc/split/dist/split.css'
 
-let split = new Split({
+let split = new Split(['.left', '.right'], {
 	container: '#app', // Element 对象或其选择器
 	min: 300, // 两个面板的最小宽度 默认 100
 	value: 0.6, // 左侧面板和总宽度的初始比值 默认 0.5
@@ -34,7 +31,9 @@ let split = new Split({
 })
 
 // 快速构件
-let split = new Split('#app')
+let split = new Split(['.left', '.right'], {
+  container: '#app'
+})
 
 // 响应式属性
 split.value = 0.65 // 一个 0 ~ 1 的小数
