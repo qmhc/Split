@@ -1,16 +1,28 @@
 import '../style/split.scss'
 
 export default class Split {
-  constructor (option) {
+  constructor ([left, right], option = {}) {
     if (typeof option === 'string') {
       option = { container: option }
     }
 
-    let { container, min = 100, value = 0.5, transition = true, timely = true } = option
+    left = document.querySelector(left)
+    right = document.querySelector(right)
 
-    if (typeof container === 'string') {
-      container = document.querySelector(container)
+    let container
+
+    if ('container' in option) {
+      container = document.querySelector(option.container)
+    } else {
+      const minHeight = Math.max(left.offsetHeight, right.offsetHeight, 200)
+
+      container = document.createElement('div')
+      container.style.minHeight = `${minHeight}px`
+
+      left.parentNode.insertBefore(this._container, left)
     }
+
+    const { min = 100, value = 0.5, transition = true, timely = true } = option
 
     this._value = value < 0 ? 0 : value > 1 ? 1 : (parseFloat(value) || 0.5)
     this._state = null
@@ -23,11 +35,19 @@ export default class Split {
     this._listeners = {}
 
     this._container = container
-
     this._container.classList.add('split-wrapper')
 
-    this._left = this._container.querySelector('.split-pane.left-pane')
-    this._right = this._container.querySelector('.split-pane.right-pane')
+    this._left = document.createElement('div')
+    this._left.className = 'split-pane left-pane'
+
+    this._right = document.createElement('div')
+    this._right.className = 'split-pane right-pane'
+
+    this._container.appendChild(this._left)
+    this._container.appendChild(this._right)
+
+    this._left.appendChild(left)
+    this._right.appendChild(right)
 
     this._initElement()
 
@@ -219,7 +239,7 @@ export default class Split {
 
   _setPanesPosition () {
     this._left.style.right = `${(1 - this._value) * 100}%`
-    this._trigger.style.left = `${this._value * 100}%`
+    this._trigger.style.left = `calc(${this._value * 100}% - 3px)`
     this._right.style.left = `${this._value * 100}%`
   }
 

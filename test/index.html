@@ -22,11 +22,11 @@
 </head>
 <body>
 	<div id="app">
-		<div class="split-pane left-pane"></div>
-		<div class="split-pane right-pane"></div>
+		<div class="left"></div>
+		<div class="right"></div>
   </div>
   <script>
-    const split = new Split('#app')
+    const split = new Split(['.left', '.right'])
   </script>
 </body>
 </html>

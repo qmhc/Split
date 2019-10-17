@@ -10,17 +10,18 @@
   
     &.left-pane {
       left: 0;
+      padding-right: 3px;
     }
   
     &.right-pane {
       right: 0;
+      padding-left: 3px;
     }
   }
   
   .split-trigger {
     position: absolute;
     top: 50%;
-    left: 50%;
     width: 0;
     height: 100%;
     transform: translate(-50%, -50%);
@@ -152,10 +153,21 @@
     .split-pane,
     .split-trigger {
       transition: all .3s;
+      overflow: hidden;
     }
   }
 
   &.left-full {
+    .split-pane {
+      &.left-pane {
+        padding-right: 6px;
+      }
+
+      &.right-pane {
+        overflow: hidden;
+      }
+    }
+
     .split-trigger-handler {
       transform: translateX(-100%);
     }
@@ -172,6 +184,16 @@
   }
 
   &.right-full {
+    .split-pane {
+      &.left-pane {
+        overflow: hidden;
+      }
+
+      &.right-pane {
+        padding-left: 6px;
+      }
+    }
+
     .split-trigger-button {
       &.left-full {
         margin-bottom: 0;
