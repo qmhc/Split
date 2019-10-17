@@ -16,6 +16,9 @@
 		body {
 			overflow: hidden;
 		}
+		#app {
+			height: 100%;
+		}
   </style>
   <link rel="stylesheet" href="../dist/split.css">
   <script src="../dist/split.js"></script>
@@ -26,7 +29,9 @@
 		<div class="right"></div>
   </div>
   <script>
-    const split = new Split(['.left', '.right'])
+    const split = new Split(['.left', '.right'], {
+			container: '#app'
+		})
   </script>
 </body>
 </html>
