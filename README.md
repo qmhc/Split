@@ -22,16 +22,17 @@ import Split from '@qmhc/split'
 
 import '@qmhc/split/dist/split.css'
 
-let split = new Split(['.left', '.right'], {
+let split = new Split(['#left', '#right'], {
 	container: '#app', // Element 对象或其选择器
+	mode: 'vertical', // 分割模式 默认 horizontal
 	min: 300, // 两个面板的最小宽度 默认 100
 	value: 0.6, // 左侧面板和总宽度的初始比值 默认 0.5
- transition: true, // 启用过渡效果 默认 true
+	transition: true, // 启用过渡效果 默认 true
 	timely: true // 在调整时实时刷新面板大小 默认 true
 })
 
 // 快速构件
-let split = new Split(['.left', '.right'], {
+let split = new Split(['#left', '#right'], {
   container: '#app'
 })
 
@@ -59,7 +60,15 @@ split.off('moveend', moveEndListener)
 split.clear('movestart')
 split.clear('moving')
 split.clear('moveend')
+
+// 多个 split 合用
+// 选择器直接传入 Split 对象
+let split2 = new Split([split, '#bottom'])
 ```
+
+## 示例 (Example)
+
+[在线示例](https://qmhc.github.io/Split/)
 
 ## 授权 (License)
 
