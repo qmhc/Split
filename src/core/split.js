@@ -6,8 +6,17 @@ export default class Split {
       option = { container: option }
     }
 
-    left = document.querySelector(left)
-    right = document.querySelector(right)
+    if (left instanceof Split) {
+      left = left.container
+    } else {
+      left = document.querySelector(left)
+    }
+
+    if (right instanceof Split) {
+      right = right.container
+    } else {
+      right = document.querySelector(right)
+    }
 
     let container
 
@@ -22,32 +31,56 @@ export default class Split {
       left.parentNode.insertBefore(container, left)
     }
 
-    const { min = 100, value = 0.5, transition = true, timely = true } = option
+    const {
+      value = 0.5,
+      min = 100,
+      transition = true,
+      timely = true,
+      mode = 'horizontal'
+    } = option
 
     this._value = value < 0 ? 0 : value > 1 ? 1 : (parseFloat(value) || 0.5)
-    this._state = null
-    this._min = min
-    this._full = ''
+    this._min = min || 100
     this._transition = transition
     this._timely = timely
+    this._mode = mode === 'vertical' ? 'vertical' : 'horizontal'
+
+    this._state = null
+    this._full = ''
+    this._offset = this._mode === 'vertical' ? 'offsetHeight' : 'offsetWidth'
 
     this._events = ['movestart', 'moving', 'moveend']
     this._listeners = {}
 
     this._container = container
     this._container.classList.add('split-wrapper')
+    this._container.classList.add(this._mode)
 
-    this._left = document.createElement('div')
-    this._left.className = 'split-pane left-pane'
+    if (this._mode === 'horizontal') {
+      this._left = document.createElement('div')
+      this._left.className = 'split-pane left-pane'
 
-    this._right = document.createElement('div')
-    this._right.className = 'split-pane right-pane'
+      this._right = document.createElement('div')
+      this._right.className = 'split-pane right-pane'
 
-    this._container.appendChild(this._left)
-    this._container.appendChild(this._right)
+      this._container.appendChild(this._left)
+      this._container.appendChild(this._right)
 
-    this._left.appendChild(left)
-    this._right.appendChild(right)
+      this._left.appendChild(left)
+      this._right.appendChild(right)
+    } else {
+      this._top = document.createElement('div')
+      this._top.className = 'split-pane top-pane'
+
+      this._bottom = document.createElement('div')
+      this._bottom.className = 'split-pane bottom-pane'
+
+      this._container.appendChild(this._top)
+      this._container.appendChild(this._bottom)
+
+      this._top.appendChild(left)
+      this._bottom.appendChild(right)
+    }
 
     this._initElement()
 
@@ -69,16 +102,20 @@ export default class Split {
 
       this._container.classList.add('split-moving')
 
-      const outer = this._container.offsetWidth
+      const outer = this._container[this._offset]
       const min = this._min / outer
+      const dir = this._mode === 'vertical' ? 'pageY' : 'pageX'
+      const style = this._mode === 'vertical' ? 'top' : 'left'
 
       this._state = {
+        dir,
         outer,
         min,
+        style,
         max: 1 - min,
-        origin: event.pageX,
+        origin: event[dir],
         value: this._value,
-        target: event.pageX
+        target: event[dir]
       }
 
       this.transition = false
@@ -93,41 +130,77 @@ export default class Split {
       return false
     })
 
-    // 左侧内容全屏
-    this._leftFull.addEventListener('click', () => {
-      this._setTransition()
+    if (this._mode === 'horizontal') {
+      // 左侧内容全屏
+      this._leftFull.addEventListener('click', () => {
+        this._setTransition()
 
-      if (this._full === 'right') {
-        this._resetFullClass()
+        if (this._full === 'right') {
+          this._resetFullClass()
 
-        return false
-      }
+          return false
+        }
 
-      this._left.style.right = '0'
-      this._right.style.left = '100%'
-      this._trigger.style.left = '100%'
-      this._container.classList.add('left-full')
+        this._left.style.right = '0'
+        this._right.style.left = '100%'
+        this._trigger.style.left = '100%'
+        this._container.classList.add('left-full')
 
-      this._full = 'left'
-    })
+        this._full = 'left'
+      })
 
-    // 右侧内容全屏
-    this._rightFull.addEventListener('click', () => {
-      this._setTransition()
+      // 右侧内容全屏
+      this._rightFull.addEventListener('click', () => {
+        this._setTransition()
 
-      if (this._full === 'left') {
-        this._resetFullClass()
+        if (this._full === 'left') {
+          this._resetFullClass()
 
-        return false
-      }
+          return false
+        }
 
-      this._left.style.right = '100%'
-      this._right.style.left = '0'
-      this._trigger.style.left = '0'
-      this._container.classList.add('right-full')
+        this._left.style.right = '100%'
+        this._right.style.left = '0'
+        this._trigger.style.left = '0'
+        this._container.classList.add('right-full')
 
-      this._full = 'right'
-    })
+        this._full = 'right'
+      })
+    } else {
+      this._topFull.addEventListener('click', () => {
+        this._setTransition()
+
+        if (this._full === 'bottom') {
+          this._resetFullClass()
+
+          return false
+        }
+
+        this._top.style.bottom = '0'
+        this._bottom.style.top = '100%'
+        this._trigger.style.top = '100%'
+        this._container.classList.add('top-full')
+
+        this._full = 'top'
+      })
+
+      this._bottomFull.addEventListener('click', () => {
+        this._setTransition()
+
+        if (this._full === 'top') {
+          this._resetFullClass()
+
+          return false
+        }
+
+        this._top.style.bottom = '100%'
+        this._bottom.style.top = '0'
+        this._trigger.style.top = '0'
+        this._container.classList.add('bottom-full')
+
+        this._full = 'bottom'
+      })
+    }
   }
 
   _resetFullClass () {
@@ -135,6 +208,8 @@ export default class Split {
 
     this._container.classList.remove('left-full')
     this._container.classList.remove('right-full')
+    this._container.classList.remove('top-full')
+    this._container.classList.remove('bottom-full')
 
     this._full = ''
   }
@@ -157,52 +232,49 @@ export default class Split {
   _initElement () {
     this._trigger = this._container.querySelector('.split-trigger')
 
-    if (!this._trigger) {
+    if (!this._trigger || this._trigger.parentNode !== this._container) {
       this._trigger = document.createElement('div')
       this._trigger.className = 'split-trigger'
       this._container.appendChild(this._trigger)
     }
 
-    let handle = this._trigger.querySelector('.split-trigger-handler')
+    this._handle = this._trigger.querySelector('.split-trigger-handler')
 
-    if (!handle) {
-      handle = document.createElement('div')
-      handle.className = 'split-trigger-handler'
+    if (!this._handle) {
+      this._handle = document.createElement('div')
+      this._handle.className = 'split-trigger-handler'
 
-      this._trigger.appendChild(handle)
+      this._trigger.appendChild(this._handle)
     }
 
-    let leftButton = handle.querySelector('.split-trigger-button.left-full')
-    let rightButton = handle.querySelector('.split-trigger-button.right-full')
+    if (this._mode === 'horizontal') {
+      this._leftFull = this._createButton('left')
+      this._rightFull = this._createButton('right')
+    } else {
+      this._topFull = this._createButton('top')
+      this._bottomFull = this._createButton('bottom')
+    }
+  }
 
-    if (!leftButton) {
-      leftButton = document.createElement('div')
-      leftButton.className = 'split-trigger-button left-full'
+  _createButton (type) {
+    const className = `${type}-full`
+
+    let button = this._handle.querySelector(`.split-trigger-button.${className}`)
+
+    if (!button) {
+      button = document.createElement('div')
+      button.className = `split-trigger-button ${className}`
 
       const icon = document.createElement('div')
       icon.className = 'split-icon-wrapper'
       icon.style.width = '4px'
       icon.appendChild(this._createArrowIcon())
 
-      leftButton.appendChild(icon)
-      handle.appendChild(leftButton)
+      button.appendChild(icon)
+      this._handle.appendChild(button)
     }
 
-    if (!rightButton) {
-      rightButton = document.createElement('div')
-      rightButton.className = 'split-trigger-button right-full'
-
-      const icon = document.createElement('div')
-      icon.className = 'split-icon-wrapper'
-      icon.style.width = '4px'
-      icon.appendChild(this._createArrowIcon())
-
-      rightButton.appendChild(icon)
-      handle.appendChild(rightButton)
-    }
-
-    this._leftFull = leftButton
-    this._rightFull = rightButton
+    return button
   }
 
   _createArrowIcon (size = 18, color = 'white') {
@@ -238,17 +310,23 @@ export default class Split {
   }
 
   _setPanesPosition () {
-    this._left.style.right = `${(1 - this._value) * 100}%`
-    this._trigger.style.left = `calc(${this._value * 100}% - 3px)`
-    this._right.style.left = `${this._value * 100}%`
+    if (this._mode === 'horizontal') {
+      this._left.style.right = `${(1 - this._value) * 100}%`
+      this._trigger.style.left = `calc(${this._value * 100}% - 3px)`
+      this._right.style.left = `${this._value * 100}%`
+    } else {
+      this._top.style.bottom = `${(1 - this._value) * 100}%`
+      this._trigger.style.top = `calc(${this._value * 100}% - 3px)`
+      this._bottom.style.top = `${this._value * 100}%`
+    }
   }
 
   // 版面大小调整中
   _handleTriggerMove (event) {
-    const offset = event.pageX - this._state.origin
-    const outerWidth = this._state.outer
+    const offset = event[this._state.dir] - this._state.origin
+    const outer = this._state.outer
 
-    let value = (outerWidth * this._state.value + offset) / outerWidth
+    let value = (outer * this._state.value + offset) / outer
 
     if (value > this._state.max) {
       value = this._state.max
@@ -261,7 +339,7 @@ export default class Split {
     if (this._timely) {
       this.value = value
     } else {
-      this._trigger.style.left = `${value * 100}%`
+      this._trigger.style[this._state.style] = `${value * 100}%`
       this._state.target = value
     }
 
@@ -354,6 +432,14 @@ export default class Split {
     this._listeners[event] = []
   }
 
+  get container () {
+    return this._container
+  }
+
+  set container (value) {
+    console.warn('Split container is read only.')
+  }
+
   get value () {
     return this._value
   }
@@ -399,6 +485,14 @@ export default class Split {
     if (current !== this._value) {
       this.value = current
     }
+  }
+
+  get mode () {
+    return this._mode
+  }
+
+  set mode (value) {
+    console.warn('Split mode is read only.')
   }
 
   get transition () {
