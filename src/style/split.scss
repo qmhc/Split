@@ -189,7 +189,7 @@
 
   &.split-transition {
     .split-pane,
-    .split-trigger,
+    & > .split-trigger,
     .split-trigger-handler {
       transition: all .3s;
       overflow: hidden;
@@ -207,17 +207,19 @@
       }
     }
 
-    .split-trigger-handler {
-      transform: translateX(-100%);
-    }
-
-    .split-trigger-button {
-      &.left-full {
-        display: none;
+    & > .split-trigger {
+      .split-trigger-handler {
+        transform: translateX(-100%);
       }
-
-      &.right-full {
-        margin-top: 0;
+  
+      .split-trigger-button {
+        &.left-full {
+          display: none;
+        }
+  
+        &.right-full {
+          margin-top: 0;
+        }
       }
     }
   }
@@ -233,13 +235,15 @@
       }
     }
 
-    .split-trigger-button {
-      &.left-full {
-        margin-bottom: 0;
-      }
-
-      &.right-full {
-        display: none;
+    & > .split-trigger {
+      .split-trigger-button {
+        &.left-full {
+          margin-bottom: 0;
+        }
+  
+        &.right-full {
+          display: none;
+        }
       }
     }
   }
@@ -255,17 +259,19 @@
       }
     }
 
-    .split-trigger-handler {
-      transform: translateY(-100%);
-    }
-
-    .split-trigger-button {
-      &.top-full {
-        display: none;
+    & > .split-trigger {
+      .split-trigger-handler {
+        transform: translateY(-100%);
       }
 
-      &.bottom-full {
-        margin-left: 0;
+      .split-trigger-button {
+        &.top-full {
+          display: none;
+        }
+  
+        &.bottom-full {
+          margin-left: 0;
+        }
       }
     }
   }
@@ -281,13 +287,15 @@
       }
     }
 
-    .split-trigger-button {
-      &.top-full {
-        margin-right: 0;
-      }
-
-      &.bottom-full {
-        display: none;
+    & > .split-trigger {
+      .split-trigger-button {
+        &.top-full {
+          margin-right: 0;
+        }
+  
+        &.bottom-full {
+          display: none;
+        }
       }
     }
   }
@@ -296,8 +304,10 @@
   &.right-full,
   &.top-full,
   &.bottom-full {
-    .split-trigger-handler {
-      cursor: default;
+    & > .split-trigger {
+      .split-trigger-handler {
+        cursor: default !important;
+      }
     }
   }
 
@@ -317,25 +327,27 @@
       }
     }
 
-    .split-trigger {
+    & > .split-trigger {
       top: 50%;
       width: 0;
       height: 100%;
 
-      &-handler {
-        width: 6px;
-        height: 100%;
-        border-left-width: 1px;
-        border-right-width: 1px;
-        border-top-width: 0;
-        border-bottom-width: 0;
-        cursor: col-resize;
-        flex-direction: column;
-      }
-
-      &-button {
-        width: 4px;
-        height: 28px;
+      .split-trigger {
+        &-handler {
+          width: 6px;
+          height: 100%;
+          border-left-width: 1px;
+          border-right-width: 1px;
+          border-top-width: 0;
+          border-bottom-width: 0;
+          cursor: col-resize;
+          flex-direction: column;
+        }
+  
+        &-button {
+          width: 4px;
+          height: 28px;
+        }
       }
     }
   }
@@ -356,25 +368,27 @@
       }
     }
 
-    .split-trigger {
+    & > .split-trigger {
       left: 50%;
       width: 100%;
       height: 0;
 
-      &-handler {
-        width: 100%;
-        height: 6px;
-        border-left-width: 0;
-        border-right-width: 0;
-        border-top-width: 1px;
-        border-bottom-width: 1px;
-        cursor: row-resize;
-        flex-direction: row;
-      }
-
-      &-button {
-        width: 28px;
-        height: 4px;
+      .split-trigger {
+        &-handler {
+          width: 100%;
+          height: 6px;
+          border-left-width: 0;
+          border-right-width: 0;
+          border-top-width: 1px;
+          border-bottom-width: 1px;
+          cursor: row-resize;
+          flex-direction: row;
+        }
+  
+        &-button {
+          width: 28px;
+          height: 4px;
+        }
       }
     }
   }

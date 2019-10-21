@@ -23,11 +23,7 @@ export default class Split {
     if ('container' in option) {
       container = document.querySelector(option.container)
     } else {
-      const minHeight = Math.max(left.offsetHeight, right.offsetHeight, 200)
-
       container = document.createElement('div')
-      container.style.minHeight = `${minHeight}px`
-
       left.parentNode.insertBefore(container, left)
     }
 
