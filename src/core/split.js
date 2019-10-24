@@ -6,17 +6,8 @@ export default class Split {
       option = { container: option }
     }
 
-    if (left instanceof Split) {
-      left = left.container
-    } else {
-      left = document.querySelector(left)
-    }
-
-    if (right instanceof Split) {
-      right = right.container
-    } else {
-      right = document.querySelector(right)
-    }
+    left = this._qeurySelector(left)
+    right = this._qeurySelector(right)
 
     let container
 
@@ -35,14 +26,14 @@ export default class Split {
       mode = 'horizontal'
     } = option
 
-    this._value = value < 0 ? 0 : value > 1 ? 1 : (parseFloat(value) || 0.5)
-    this._min = min || 100
-    this._transition = transition
-    this._timely = timely
-    this._mode = mode === 'vertical' ? 'vertical' : 'horizontal'
+    this.value = value
+    this.min = min || 100
+    this.transition = transition
+    this.timely = timely
 
     this._state = null
     this._full = ''
+    this._mode = mode === 'vertical' ? 'vertical' : 'horizontal'
     this._offset = this._mode === 'vertical' ? 'offsetHeight' : 'offsetWidth'
 
     this._events = ['movestart', 'moving', 'moveend']
@@ -196,6 +187,16 @@ export default class Split {
 
         this._full = 'bottom'
       })
+    }
+
+    this._init = true
+  }
+
+  _qeurySelector (selector) {
+    if (selector instanceof Split) {
+      return selector.container
+    } else {
+      return document.querySelector(selector)
     }
   }
 
@@ -443,6 +444,12 @@ export default class Split {
   set value (value) {
     value = value < 0 ? 0 : value > 1 ? 1 : (parseFloat(value) || 0.5)
 
+    if (!this._init) {
+      this._value = value
+
+      return
+    }
+
     if (value.toFixed(5) !== this._value.toFixed(5)) {
       this._value = value
       this._setTransition()
@@ -457,30 +464,32 @@ export default class Split {
   set min (value) {
     value = ~~value
 
-    const outer = this._container.offsetWidth
+    if (this._init) {
+      const outer = this._container.offsetWidth
 
-    if (value >= outer / 2) {
-      return
+      if (value >= outer / 2) {
+        return
+      }
+
+      const min = value / outer
+      const max = 1 - min
+
+      let current = this._value
+
+      if (current < min) {
+        current = min
+      }
+
+      if (current > max) {
+        current = max
+      }
+
+      if (current !== this._value) {
+        this.value = current
+      }
     }
 
     this._min = value
-
-    const min = this._min / outer
-    const max = 1 - min
-
-    let current = this._value
-
-    if (current < min) {
-      current = min
-    }
-
-    if (current > max) {
-      current = max
-    }
-
-    if (current !== this._value) {
-      this.value = current
-    }
   }
 
   get mode () {

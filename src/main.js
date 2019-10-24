@@ -23,7 +23,12 @@ const sp4 = new Split([sp2, sp3], {
   value: 0.6
 })
 
+const sp5 = new Split([sp4, '#six'], {
+  value: 0.7
+})
+
 window.sp1 = sp1
 window.sp2 = sp2
 window.sp3 = sp3
 window.sp4 = sp4
+window.sp5 = sp5
