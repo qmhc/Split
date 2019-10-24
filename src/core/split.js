@@ -1,13 +1,15 @@
 import '../style/split.scss'
 
 export default class Split {
-  constructor ([left, right], option = {}) {
+  constructor ([first, second], option = {}) {
     if (typeof option === 'string') {
       option = { container: option }
     }
 
-    left = this._qeurySelector(left)
-    right = this._qeurySelector(right)
+    const elements = [
+      this._qeurySelector(first),
+      this._qeurySelector(second)
+    ]
 
     let container
 
@@ -15,7 +17,7 @@ export default class Split {
       container = document.querySelector(option.container)
     } else {
       container = document.createElement('div')
-      left.parentNode.insertBefore(container, left)
+      elements[0].parentNode.insertBefore(container, elements[0])
     }
 
     const {
@@ -44,29 +46,19 @@ export default class Split {
     this._container.classList.add(this._mode)
 
     if (this._mode === 'horizontal') {
-      this._left = document.createElement('div')
-      this._left.className = 'split-pane left-pane'
-
-      this._right = document.createElement('div')
-      this._right.className = 'split-pane right-pane'
-
-      this._container.appendChild(this._left)
-      this._container.appendChild(this._right)
-
-      this._left.appendChild(left)
-      this._right.appendChild(right)
+      this._style = ['left', 'right']
     } else {
-      this._top = document.createElement('div')
-      this._top.className = 'split-pane top-pane'
+      this._style = ['top', 'bottom']
+    }
 
-      this._bottom = document.createElement('div')
-      this._bottom.className = 'split-pane bottom-pane'
+    this._elements = []
 
-      this._container.appendChild(this._top)
-      this._container.appendChild(this._bottom)
+    for (let i = 0; i < 2; i++) {
+      this._elements[i] = document.createElement('div')
+      this._elements[i].className = `split-pane ${this._style[i]}-pane`
 
-      this._top.appendChild(left)
-      this._bottom.appendChild(right)
+      this._elements[i].appendChild(elements[i])
+      this._container.appendChild(this._elements[i])
     }
 
     this._initElement()
@@ -117,77 +109,39 @@ export default class Split {
       return false
     })
 
-    if (this._mode === 'horizontal') {
-      // 左侧内容全屏
-      this._leftFull.addEventListener('click', () => {
-        this._setTransition()
+    this._fullBtns[0].addEventListener('click', () => {
+      this._setTransition()
 
-        if (this._full === 'right') {
-          this._resetFullClass()
+      if (this._full === this._style[1]) {
+        this._resetFullClass()
 
-          return false
-        }
+        return false
+      }
 
-        this._left.style.right = '0'
-        this._right.style.left = '100%'
-        this._trigger.style.left = '100%'
-        this._container.classList.add('left-full')
+      this._elements[0].style[this._style[1]] = '0'
+      this._elements[1].style[this._style[0]] = '100%'
+      this._trigger.style[this._style[0]] = '100%'
+      this._container.classList.add(`${this._style[0]}-full`)
 
-        this._full = 'left'
-      })
+      this._full = this._style[0]
+    })
 
-      // 右侧内容全屏
-      this._rightFull.addEventListener('click', () => {
-        this._setTransition()
+    this._fullBtns[1].addEventListener('click', () => {
+      this._setTransition()
 
-        if (this._full === 'left') {
-          this._resetFullClass()
+      if (this._full === 'left') {
+        this._resetFullClass()
 
-          return false
-        }
+        return false
+      }
 
-        this._left.style.right = '100%'
-        this._right.style.left = '0'
-        this._trigger.style.left = '0'
-        this._container.classList.add('right-full')
+      this._elements[0].style[this._style[1]] = '100%'
+      this._elements[1].style[this._style[0]] = '0'
+      this._trigger.style[this._style[0]] = '0'
+      this._container.classList.add(`${this._style[1]}-full`)
 
-        this._full = 'right'
-      })
-    } else {
-      this._topFull.addEventListener('click', () => {
-        this._setTransition()
-
-        if (this._full === 'bottom') {
-          this._resetFullClass()
-
-          return false
-        }
-
-        this._top.style.bottom = '0'
-        this._bottom.style.top = '100%'
-        this._trigger.style.top = '100%'
-        this._container.classList.add('top-full')
-
-        this._full = 'top'
-      })
-
-      this._bottomFull.addEventListener('click', () => {
-        this._setTransition()
-
-        if (this._full === 'top') {
-          this._resetFullClass()
-
-          return false
-        }
-
-        this._top.style.bottom = '100%'
-        this._bottom.style.top = '0'
-        this._trigger.style.top = '0'
-        this._container.classList.add('bottom-full')
-
-        this._full = 'bottom'
-      })
-    }
+      this._full = this._style[1]
+    })
 
     this._init = true
   }
@@ -244,13 +198,10 @@ export default class Split {
       this._trigger.appendChild(this._handle)
     }
 
-    if (this._mode === 'horizontal') {
-      this._leftFull = this._createButton('left')
-      this._rightFull = this._createButton('right')
-    } else {
-      this._topFull = this._createButton('top')
-      this._bottomFull = this._createButton('bottom')
-    }
+    this._fullBtns = [
+      this._createButton(this._style[0]),
+      this._createButton(this._style[1])
+    ]
   }
 
   _createButton (type) {
@@ -307,15 +258,9 @@ export default class Split {
   }
 
   _setPanesPosition () {
-    if (this._mode === 'horizontal') {
-      this._left.style.right = `${(1 - this._value) * 100}%`
-      this._trigger.style.left = `calc(${this._value * 100}% - 3px)`
-      this._right.style.left = `${this._value * 100}%`
-    } else {
-      this._top.style.bottom = `${(1 - this._value) * 100}%`
-      this._trigger.style.top = `calc(${this._value * 100}% - 3px)`
-      this._bottom.style.top = `${this._value * 100}%`
-    }
+    this._elements[0].style[this._style[1]] = `${(1 - this._value) * 100}%`
+    this._trigger.style[this._style[0]] = `calc(${this._value * 100}% - 3px)`
+    this._elements[1].style[this._style[0]] = `${this._value * 100}%`
   }
 
   // 版面大小调整中
