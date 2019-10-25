@@ -14,7 +14,11 @@ export default class Split {
     let container
 
     if ('container' in option) {
-      container = document.querySelector(option.container)
+      if (option.container instanceof Element) {
+        container = option.container
+      } else {
+        container = document.querySelector(option.container)
+      }
     } else {
       container = document.createElement('div')
       elements[0].parentNode.insertBefore(container, elements[0])

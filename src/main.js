@@ -6,7 +6,7 @@ const app = document.querySelector('#app')
 app.style.height = '100%'
 
 const sp1 = new Split(['#one', '#two'], {
-  container: '#app',
+  container: app,
   mode: 'vertical'
 })
 
