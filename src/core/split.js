@@ -154,6 +154,10 @@ export default class Split {
     if (selector instanceof Split) {
       return selector.container
     } else {
+      if (selector instanceof Element) {
+        return selector
+      }
+
       return document.querySelector(selector)
     }
   }
