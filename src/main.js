@@ -7,7 +7,8 @@ app.style.height = '100%'
 
 const sp1 = new Split(['#one', '#two'], {
   container: app,
-  mode: 'vertical'
+  mode: 'vertical',
+  useFull: false
 })
 
 const sp2 = new Split([sp1, '#three'], {
@@ -15,7 +16,8 @@ const sp2 = new Split([sp1, '#three'], {
 })
 
 const sp3 = new Split(['#four', '#five'], {
-  value: 0.6
+  value: 0.6,
+  useFull: false
 })
 
 const sp4 = new Split([sp2, sp3], {

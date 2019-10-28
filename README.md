@@ -50,6 +50,13 @@ const moveEndListener = () => console.log('Move end!')
 split.on('movestart', moveStartListener)
 split.on('moving', movingListener)
 split.on('moveend', moveEndListener)
+split.on('fullreset', resetListener)
+// 横向时
+split.on('leftfull', fullListener)
+split.on('righttfull', fullListener)
+// 纵向时
+split.on('toptfull', fullListener)
+split.on('bottomfull', fullListener)
 
 // 移除事件监听
 split.off('movestart', moveStartListener)

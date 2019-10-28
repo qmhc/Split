@@ -1,5 +1,7 @@
 import '../style/split.scss'
 
+// FIXME: min 可以接收一个数组, 分别控制两边的最小值
+// TODO: timely 为 false 时, 原 handler 不动, 应有个阴影效果的 handler 标志位置
 export default class Split {
   constructor ([first, second], option = {}) {
     if (typeof option === 'string') {
@@ -29,7 +31,8 @@ export default class Split {
       min = 100,
       transition = true,
       timely = true,
-      mode = 'horizontal'
+      mode = 'horizontal',
+      useFull = true
     } = option
 
     this.value = value
@@ -41,9 +44,7 @@ export default class Split {
     this._full = ''
     this._mode = mode === 'vertical' ? 'vertical' : 'horizontal'
     this._offset = this._mode === 'vertical' ? 'offsetHeight' : 'offsetWidth'
-
-    this._events = ['movestart', 'moving', 'moveend']
-    this._listeners = {}
+    this._useFull = !!useFull
 
     this._container = container
     this._container.classList.add('split-wrapper')
@@ -54,6 +55,16 @@ export default class Split {
     } else {
       this._style = ['top', 'bottom']
     }
+
+    this._events = [
+      'movestart',
+      'moving',
+      'moveend',
+      `${this._style[0]}full`,
+      `${this._style[1]}full`,
+      'fullreset'
+    ]
+    this._listeners = {}
 
     this._elements = []
 
@@ -113,39 +124,47 @@ export default class Split {
       return false
     })
 
-    this._fullBtns[0].addEventListener('click', () => {
-      this._setTransition()
+    if (this._useFull) {
+      this._fullBtns[0].addEventListener('click', () => {
+        this._setTransition()
 
-      if (this._full === this._style[1]) {
-        this._resetFullClass()
+        if (this._full === this._style[1]) {
+          this._resetFullClass()
+          this._dispatchEvent('fullreset')
 
-        return false
-      }
+          return false
+        }
 
-      this._elements[0].style[this._style[1]] = '0'
-      this._elements[1].style[this._style[0]] = '100%'
-      this._trigger.style[this._style[0]] = '100%'
-      this._container.classList.add(`${this._style[0]}-full`)
+        this._elements[0].style[this._style[1]] = '0'
+        this._elements[1].style[this._style[0]] = '100%'
+        this._trigger.style[this._style[0]] = '100%'
+        this._container.classList.add(`${this._style[0]}-full`)
 
-      this._full = this._style[0]
-    })
+        this._full = this._style[0]
 
-    this._fullBtns[1].addEventListener('click', () => {
-      this._setTransition()
+        this._dispatchEvent(`${this._style[0]}full`)
+      })
 
-      if (this._full === 'left') {
-        this._resetFullClass()
+      this._fullBtns[1].addEventListener('click', () => {
+        this._setTransition()
 
-        return false
-      }
+        if (this._full === 'left') {
+          this._resetFullClass()
+          this._dispatchEvent('fullreset')
 
-      this._elements[0].style[this._style[1]] = '100%'
-      this._elements[1].style[this._style[0]] = '0'
-      this._trigger.style[this._style[0]] = '0'
-      this._container.classList.add(`${this._style[1]}-full`)
+          return false
+        }
 
-      this._full = this._style[1]
-    })
+        this._elements[0].style[this._style[1]] = '100%'
+        this._elements[1].style[this._style[0]] = '0'
+        this._trigger.style[this._style[0]] = '0'
+        this._container.classList.add(`${this._style[1]}-full`)
+
+        this._full = this._style[1]
+
+        this._dispatchEvent(`${this._style[1]}full`)
+      })
+    }
 
     this._init = true
   }
@@ -206,10 +225,12 @@ export default class Split {
       this._trigger.appendChild(this._handle)
     }
 
-    this._fullBtns = [
-      this._createButton(this._style[0]),
-      this._createButton(this._style[1])
-    ]
+    if (this._useFull) {
+      this._fullBtns = [
+        this._createButton(this._style[0]),
+        this._createButton(this._style[1])
+      ]
+    }
   }
 
   _createButton (type) {
