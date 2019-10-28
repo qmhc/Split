@@ -1,7 +1,6 @@
 import '../style/split.scss'
 
 // FIXME: min 可以接收一个数组, 分别控制两边的最小值
-// TODO: timely 为 false 时, 原 handle 不动, 应有个阴影效果的 handle 标志位置
 export default class Split {
   constructor ([first, second], option = {}) {
     if (typeof option === 'string') {
