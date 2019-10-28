@@ -1,59 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width,initial-scale=1.0">
-	<link rel="stylesheet" href="./split.css">
-	<title>Split Development</title>
-	<style>
-		* {
-			box-sizing: border-box;
-			margin: 0px;
-		}
-		html, body {
-			height: 100%;
-		}
-		body {
-			overflow: hidden;
-		}
-	</style>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="stylesheet" href="./split.css">
+  <title>Split Example</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0px;
+    }
+    html, body {
+      height: 100%;
+    }
+    body {
+      overflow: hidden;
+    }
+  </style>
 </head>
 <body>
-	<noscript>
-		<strong>We're sorry but weekly doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-	</noscript>
-	<div id="app" style="height: 100%">
-		<div id="one" style="background: cyan;"><p>One</p></div>
-		<div id="two" style="background: rgb(22, 146, 248);"><p>Two</p></div>
-		<div id="three" style="background: rgb(23, 221, 129);"><p>Three</p></div>
-		<div id="four" style="background: rgb(186, 206, 95);"><p>Four</p></div>
-		<div id="five" style="background: rgb(236, 162, 50);"><p>Five</p></div>
-		<div id="six" style="background: rgb(153, 78, 214);"><p>Six</p></div>
-	</div>
-	<script src="./split.js"></script>
-	<script>
-		const sp1 = new Split(['#one', '#two'], {
-			container: '#app',
-			mode: 'vertical'
-		})
+  <noscript>
+    <strong>We're sorry but weekly doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+  </noscript>
+  <div id="app" style="height: 100%">
+    <div id="one" style="background: cyan;"><p>One</p></div>
+    <div id="two" style="background: rgb(22, 146, 248);"><p>Two</p></div>
+    <div id="three" style="background: rgb(23, 221, 129);"><p>Three</p></div>
+    <div id="four" style="background: rgb(186, 206, 95);"><p>Four</p></div>
+    <div id="five" style="background: rgb(236, 162, 50);"><p>Five</p></div>
+    <div id="six" style="background: rgb(153, 78, 214);"><p>Six</p></div>
+  </div>
+  <script src="./split.js"></script>
+  <script>
+    const sp1 = new Split(['#one', '#two'], {
+      container: '#app',
+      mode: 'vertical',
+      useFull: false,
+      useTransition: false,
+      timely: false
+    })
 
-		const sp2 = new Split([sp1, '#three'], {
-			value: 0.4
-		})
+    const sp2 = new Split([sp1, '#three'], {
+      value: 0.4
+    })
 
-		const sp3 = new Split(['#four', '#five'], {
-			value: 0.6
-		})
+    const sp3 = new Split(['#four', '#five'], {
+      value: 0.6,
+      useFull: false,
+      timely: false
+    })
 
-		const sp4 = new Split([sp2, sp3], {
-			mode: 'vertical',
-			value: 0.6
-		})
+    const sp4 = new Split([sp2, sp3], {
+      mode: 'vertical',
+      value: 0.6
+    })
 
-		const sp5 = new Split([sp4, '#six'], {
-		  value: 0.7
-		})
-	</script>
+    const sp5 = new Split([sp4, '#six'], {
+      value: 0.7
+    })
+  </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 import '../style/split.scss'
 
 // FIXME: min 可以接收一个数组, 分别控制两边的最小值
-// TODO: timely 为 false 时, 原 handler 不动, 应有个阴影效果的 handler 标志位置
+// TODO: timely 为 false 时, 原 handle 不动, 应有个阴影效果的 handle 标志位置
 export default class Split {
   constructor ([first, second], option = {}) {
     if (typeof option === 'string') {
@@ -29,7 +29,7 @@ export default class Split {
     const {
       value = 0.5,
       min = 100,
-      transition = true,
+      useTransition = true,
       timely = true,
       mode = 'horizontal',
       useFull = true
@@ -37,13 +37,14 @@ export default class Split {
 
     this.value = value
     this.min = min || 100
-    this.transition = transition
+    this.useTransition = useTransition
     this.timely = timely
 
     this._state = null
     this._full = ''
     this._mode = mode === 'vertical' ? 'vertical' : 'horizontal'
     this._offset = this._mode === 'vertical' ? 'offsetHeight' : 'offsetWidth'
+    this._transition = true
     this._useFull = !!useFull
 
     this._container = container
@@ -109,17 +110,22 @@ export default class Split {
         max: 1 - min,
         origin: event[dir],
         value: this._value,
-        target: event[dir]
+        target: this._value
       }
 
-      this.transition = false
+      this._transition = false
 
-      this._dispatchEvent('movestart')
+      if (!this._timely) {
+        this._vhandle.style[this._style[0]] = `${this._value * 100}%`
+        this._vhandle.style.display = 'block'
+      }
 
       // 如果不手动绑定 this 此处方法调用后 this 为 document
       // 如果在这里才绑定 this 则 remove 时无法正确移除事件
       document.addEventListener('mousemove', this._handleTriggerMove)
       document.addEventListener('mouseup', this._handleTriggerUp)
+
+      this._dispatchEvent('movestart')
 
       return false
     })
@@ -148,7 +154,7 @@ export default class Split {
       this._fullBtns[1].addEventListener('click', () => {
         this._setTransition()
 
-        if (this._full === 'left') {
+        if (this._full === this._style[0]) {
           this._resetFullClass()
           this._dispatchEvent('fullreset')
 
@@ -163,6 +169,16 @@ export default class Split {
         this._full = this._style[1]
 
         this._dispatchEvent(`${this._style[1]}full`)
+      })
+
+      this._fullBtns[0].addEventListener('mousedown', event => {
+        event.stopPropagation()
+        event.preventDefault()
+      })
+
+      this._fullBtns[1].addEventListener('mousedown', event => {
+        event.stopPropagation()
+        event.preventDefault()
       })
     }
 
@@ -193,12 +209,10 @@ export default class Split {
   }
 
   _setTransition () {
-    if (!this._transition) {
-      return
+    if (this._transition && this._useTransition) {
+      this._container.classList.add('split-transition')
+      this._container.addEventListener('transitionend', this._removeTransition)
     }
-
-    this._container.classList.add('split-transition')
-    this._container.addEventListener('transitionend', this._removeTransition)
   }
 
   _removeTransition () {
@@ -216,13 +230,22 @@ export default class Split {
       this._container.appendChild(this._trigger)
     }
 
-    this._handle = this._trigger.querySelector('.split-trigger-handler')
+    this._handle = this._trigger.querySelector('.split-trigger-handle')
 
     if (!this._handle) {
       this._handle = document.createElement('div')
-      this._handle.className = 'split-trigger-handler'
+      this._handle.className = 'split-trigger-handle'
 
       this._trigger.appendChild(this._handle)
+    }
+
+    this._vhandle = this._container.querySelector('.split-virtual-handle')
+
+    if (!this._vhandle) {
+      this._vhandle = document.createElement('div')
+      this._vhandle.className = 'split-virtual-handle'
+
+      this._container.appendChild(this._vhandle)
     }
 
     if (this._useFull) {
@@ -310,7 +333,7 @@ export default class Split {
     if (this._timely) {
       this.value = value
     } else {
-      this._trigger.style[this._state.style] = `${value * 100}%`
+      this._vhandle.style[this._state.style] = `${value * 100}%`
       this._state.target = value
     }
 
@@ -324,15 +347,15 @@ export default class Split {
     document.removeEventListener('mousemove', this._handleTriggerMove)
     document.removeEventListener('mouseup', this._handleTriggerUp)
 
+    this._transition = true
+
     if (!this._timely) {
       this.value = this._state.target
     }
 
     this._state = null
-
     this._container.classList.remove('split-moving')
-
-    this.transition = true
+    this._vhandle.style.display = 'none'
 
     this._dispatchEvent('moveend')
 
@@ -474,12 +497,12 @@ export default class Split {
     console.warn('Split mode is read only.')
   }
 
-  get transition () {
-    return this._transition
+  get useTransition () {
+    return this._useTransition
   }
 
-  set transition (value) {
-    this._transition = !!value
+  set useTransition (value) {
+    this._useTransition = !!value
   }
 
   get timely () {

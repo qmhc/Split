@@ -15,8 +15,8 @@
     transform: translate(-50%, -50%);
     z-index: 10;
 
-    &-handler {
-      background: #f8f8f9;
+    &-handle {
+      background-color: #f8f8f9;
       border: solid #dcdee2;
       display: flex;
       justify-content: center;
@@ -25,7 +25,7 @@
 
     &-button {
       position: relative;
-      background: $button-color;
+      background-color: $button-color;
       cursor: pointer;
       display: flex;
       justify-content: center;
@@ -167,7 +167,7 @@
       }
   
       &:hover {
-        background: $button-hover-color;
+        background-color: $button-hover-color;
       }
     }
   }
@@ -179,8 +179,24 @@
     overflow: hidden;
   }
 
+  .split-virtual-handle {
+    display: none;
+    position: absolute;
+    background-color: rgba(black, .3);
+    z-index: 11;
+    pointer-events: none;
+  }
+
   &.split-moving {
     user-select: none;
+    
+    &.horizontal {
+      cursor: col-resize;
+    }
+
+    &.vertical {
+      cursor: row-resize;
+    }
 
     .split-pane {
       z-index: -1;
@@ -190,25 +206,26 @@
   &.split-transition {
     .split-pane,
     & > .split-trigger,
-    .split-trigger-handler {
+    .split-trigger-handle {
       transition: all .3s;
-      overflow: hidden;
+      pointer-events: none;
     }
   }
 
   &.left-full {
     .split-pane {
       &.left-pane {
-        padding-right: 6px;
+        padding-right: 6px !important;
       }
 
       &.right-pane {
+        padding-left: 0 !important;
         overflow: hidden;
       }
     }
 
     & > .split-trigger {
-      .split-trigger-handler {
+      .split-trigger-handle {
         transform: translateX(-100%);
       }
   
@@ -227,11 +244,12 @@
   &.right-full {
     .split-pane {
       &.left-pane {
+        padding-right: 0 !important;
         overflow: hidden;
       }
 
       &.right-pane {
-        padding-left: 6px;
+        padding-left: 6px !important;
       }
     }
 
@@ -251,16 +269,17 @@
   &.top-full {
     .split-pane {
       &.top-pane {
-        padding-bottom: 6px;
+        padding-bottom: 6px !important;
       }
 
       &.bottom-pane {
+        padding-top: 0 !important;
         overflow: hidden;
       }
     }
 
     & > .split-trigger {
-      .split-trigger-handler {
+      .split-trigger-handle {
         transform: translateY(-100%);
       }
 
@@ -279,11 +298,12 @@
   &.bottom-full {
     .split-pane {
       &.top-pane {
+        padding-bottom: 0 !important;
         overflow: hidden;
       }
 
       &.bottom-pane {
-        padding-top: 6px;
+        padding-top: 6px !important;
       }
     }
 
@@ -305,7 +325,7 @@
   &.top-full,
   &.bottom-full {
     & > .split-trigger {
-      .split-trigger-handler {
+      .split-trigger-handle {
         cursor: default !important;
       }
     }
@@ -333,7 +353,7 @@
       height: 100%;
 
       .split-trigger {
-        &-handler {
+        &-handle {
           width: 6px;
           height: 100%;
           border-left-width: 1px;
@@ -349,6 +369,15 @@
           height: 28px;
         }
       }
+    }
+
+    & > .split-virtual-handle {
+      width: 6px;
+      height: 100%;
+      left: 50%;
+      background-color: rgba(black, .3);
+      cursor: col-resize;
+      transform: translateX(-50%);
     }
   }
 
@@ -374,7 +403,7 @@
       height: 0;
 
       .split-trigger {
-        &-handler {
+        &-handle {
           width: 100%;
           height: 6px;
           border-left-width: 0;
@@ -390,6 +419,14 @@
           height: 4px;
         }
       }
+    }
+
+    & > .split-virtual-handle {
+      width: 100%;
+      height: 6px;
+      top: 50%;
+      cursor: row-resize;
+      transform: translateY(-50%);
     }
   }
 }
